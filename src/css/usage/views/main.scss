@@ -21,9 +21,10 @@ section{
         overflow: auto;
         width: 100%;
         height: 100%;
-        margin: 40px 0;
+        margin: 20px 0;
         padding: 0 15px; 
-        position: relative;       
+        position: relative; 
+        text-align: center;      
         p{
             width: 100%;
             height: 30px;
@@ -34,21 +35,77 @@ section{
         p:first-child{
             font-weight: bold;
         }
-        p.current-line-0{
-            color: #ff0;
-            font-weight: bold;
-        }
-        p.current-line-1{
-            color: #f00;
-            font-weight: bold;
-        }
-        p.current-line-2{
-            color: #00f;
-            font-weight: bold;
-        }
-        p.current-line-3{
+        p.current{
             color: #0f0;
             font-weight: bold;
-        }  
+        } 
+    }
+    
+}
+
+$paddingLeft: 10px;
+$h2Height: 45px;
+$liHeight: 40px;
+
+.playList{
+    width: 85%;
+    height: 50%;
+    background: grey;
+    padding-bottom: 10px;
+    position: fixed;
+    right: 5%;
+    bottom: $heiFooter - 15px;
+    z-index: 1000;
+    font-family: "微软雅黑";
+    @include flexbox(column);
+    display: none;
+    h2{
+        height: $h2Height;
+        padding-left: $paddingLeft;
+        line-height: $h2Height;
+        font-size: 18px;
+        font-weight: normal;
+        border-color: #fff;
+        span{
+            padding: 0 10px;
+            font-size: 12px;
+        }
+    }
+    ul{
+        width: 100%;
+        @include flex(1);
+        overflow: auto;
+        li{
+            height: $liHeight;
+            line-height: $liHeight;
+            padding-left: $paddingLeft;
+            border: 0;
+            font-size: 16px;
+            @include flexbox(row);
+            span{
+                width: 35px;
+                height: 100%;
+                text-align: left;
+            }
+            center{
+                text-align: left;
+                @include flex(1);
+                
+                strong{
+                    display: block;
+                    height: ($liHeight / 2);
+                    line-height: ($liHeight / 2);
+                    font-weight: normal;
+                }
+                small{
+                    display: block;
+                    font-size: 12px;
+                    height: ($liHeight / 2);
+                    line-height: ($liHeight / 3);
+                    color: #ccc;
+                }
+            }
+            
+        }
     }
 }

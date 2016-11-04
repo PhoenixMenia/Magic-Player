@@ -25,6 +25,11 @@ footer{
             justify-content: center;
             align-items: center;
             font-size: 20px;
+            &:nth-child(3){
+                font-size: 40px;
+                position: relative;
+                top: -5px;
+            }
         }
     }
 }

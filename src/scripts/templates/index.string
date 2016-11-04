@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" id="container">
 	<header>
 		<span>&#xe6e4;</span>
 		<span id="songName" class="text-big"></span>
@@ -10,6 +10,7 @@
 			<input id="volumeRange" type="range" value="0" min="0" max="2" step="0.1"/>
 		</div>
 		<article id="lyricContainer">
+			<div id="cover"></div>
 		</article>
 	</section>
 	<footer>
@@ -27,4 +28,17 @@
 			<span id="menu">&#xe67d;</span>
 		</div>
 	</footer>
+</div>
+
+<div id="playList" class="playList">
+	<h2 class="border-bottom">
+		播放队列<span>1</span>
+	</h2>
+	<ul>
+		<li>
+			<span>01</span>
+			<center><strong>asfasfasfasf</strong><small>abcd</small></center>
+			<span>sff</span>
+		</li>
+	</ul>
 </div>

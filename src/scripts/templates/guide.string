@@ -1,7 +1,7 @@
 <div class="swiper-container">
 	<div class="swiper-wrapper" id="myswiper">
 		<div class="swiper-slide">
-			<img src="/src/img/4.jpg" />
+			<img src="/src/img/1.jpg" />
 		</div>
 		<div class="swiper-slide">
 			<img src="/src/img/2.jpg" />
@@ -15,7 +15,5 @@
 		</div>
 	</div>
 	<!--产生图片下面的小圆点-->
-	<!--<div class="swiper-pagination swiper-pagination-white"></div>
-	<div class="swiper-button-prev swiper-button-white"></div>
-	<div class="swiper-button-next swiper-button-white"></div>-->
+	<div class="swiper-pagination swiper-pagination-white"></div>
 </div>

@@ -1,4 +1,5 @@
-function getStyle(obj,attr) {	
+/*================工具函数===================*/
+function getStyle(obj,attr) {
 	if (obj.currentStyle) {
 		return obj.currentStyle[attr];
 	} else {
@@ -7,10 +8,28 @@ function getStyle(obj,attr) {
 }
 
 
-
-window.onload = function() {
+/*window.onload = function() {
 	new Player().initialList();
-}
+}*/
+
+//修改body的className添加背景图片
+document.body.className = 'picbg';
+
+
+var bgSide = 'rgba(0,0,0,.7)';
+var bgCenter = 'rgba(0,0,0,0)';
+var bg = 'linear-gradient('+ bgSide + ',' + bgCenter + ','+ bgCenter + ',' + bgSide + ')';
+
+
+//执行主函数
+setTimeout(function() {
+	new Player().initialList();
+	
+	var conter = document.getElementById('container');
+	conter.style.background = bg;
+}, 1000);
+
+
 
 
 var Player = function() {
@@ -20,7 +39,6 @@ var Player = function() {
 	this.currentIndex = 0;
 	this.songName = document.getElementById('songName');
 	this.lyric = null;
-    this.lyricStyle = 0;
     this.isPlay = true;
     this.isVolume = true;
     this.volumeVal = 1;
@@ -33,18 +51,19 @@ var Player = function() {
     this.modeCtrl = document.getElementById('loopModel');
     this.loopMode = 0;
     this.playRange = document.getElementById('playRange');
+    this.menu = document.getElementById('menu');
 }
 
-Player.prototype.init = function(songs) {	
+Player.prototype.init = function(songs) {
 	var that = this;
 	this.allSongs = songs;
 	var index = this.currentIndex;
 	var songName = '/src/content/songs/' + this.allSongs[index].lrc_name + '.mp3';
 	this.audio.src = songName;
-	//that.lyricContainer.scrollTop = 0;
-	that.lyric = null;
-	that.lyricContainer.innerHTML = 'loading...';
-	that.lyricStyle = Math.floor(Math.random() * 4);
+	this.lyric = null;
+	this.lyricContainer.innerHTML = 'loading...';
+	//this.lyricContainer.style.background = bg;
+	
 	
 	this.progress();
 	this.play();
@@ -129,6 +148,11 @@ Player.prototype.init = function(songs) {
 			that.audio.addEventListener('timeupdate', playyy);
 		});
 		
+	});
+	
+	
+	this.menu.addEventListener('click', function() {
+		that.getMenu();
 	});
 	
 };
@@ -314,7 +338,7 @@ Player.prototype.progress = function() {
 			var line = document.getElementById('line-' + i),
 				prevLine = document.getElementById('line-'+(i>0?i-1:i));
 			prevLine.className = 'text-middle';
-			line.className = 'text-middle current-line-' + this.lyricStyle;	
+			line.className = 'text-middle current';	
 			
 			if (line.offsetTop >= this.lyricContainerHeight/2) {
 				this.lyricContainer.scrollTop = line.offsetTop 
@@ -329,11 +353,8 @@ Player.prototype.progress = function() {
 	isEnded && this.mm();
 }
 
-
-
-
-
-
-
-
+Player.prototype.getMenu = function() {
+	console.log(123);
+	//this.menu.style.display = '';
+}
 

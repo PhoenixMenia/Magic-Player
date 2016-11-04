@@ -27,8 +27,6 @@ body{
     font-size: $baseSize;
     line-height: 1.5;
     font-family: helvetica Neue, helvetica, STHeiTi, sans-serif;
-    background: url(/src/img/bg.jpg) no-repeat left top;
-    background-size: 100% 100%;
     color: #FFFDEF;
 }
 
@@ -55,6 +53,12 @@ article,aside,details,figcaption,footer,header,menu,nav,section,summary,figure{
     width: 100%;
     height: 100%;
     @include flexbox(column);
+}
+
+
+.picbg{
+    background: url(/src/img/bg.jpg) no-repeat left top;
+    background-size: 100% 100%;
 }
 
 
@@ -101,6 +105,23 @@ article,aside,details,figcaption,footer,header,menu,nav,section,summary,figure{
         font-size: $baseSize + 12;
     }
 }
+
+
+
+/*====================1px边框==================*/
+
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5) {
+    .border-bottom {
+        border-bottom: solid  0.5px #000;
+    }
+}
+
+@media only screen and (-Webkit-min-device-pixel-ratio: 2.5), only screen and (min-device-pixel-ratio: 2.5) {
+    .border-bottom {
+        border-bottom: solid  0.3333px #000;
+    }
+}
+
 
 
 
