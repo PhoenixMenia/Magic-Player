@@ -1,0 +1,20 @@
+header{
+    width: 100%;
+    height: $heiHeader;
+    overflow: hidden;
+    @include flexbox;
+    text-align: center;
+    line-height: $heiHeader;
+    
+    span:not(:nth-child(2)){
+        width: $heiHeader;
+        height: $heiHeader;
+        font-family: iconfont;
+        font-size: 23px;       
+    }
+    span:nth-child(2){
+        flex: 1;
+        font-size: 20px;
+        font-weight: bold;
+    }
+}

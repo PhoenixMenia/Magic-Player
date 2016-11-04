@@ -1,0 +1,32 @@
+<div class="container">
+	<div id="hidden"></div>
+	<header>
+		<span>&#xe6e4;</span>
+		<span id="songName">当发达</span>
+		<span>&#xe648;</span>
+	</header>
+	<section>
+		<div>
+			<img id="volume" src="./src/img/vol.png"/>
+			<input id="volumeRange" type="range" value="0.5" min="0" max="1.0" step="0.1"/>
+		</div>
+		<article>
+			<div id="lyricContainer"></div>
+		</article>
+	</section>
+	<footer>
+		<audio id="audio" src="/src/content/songs/123_mu_tou_ren.mp3" autoplay="autoplay"></audio>
+		<div>
+			<span id="currTime">123</span>
+			<input id="playRange" type="range" value="0" min="0" max="" step="1"/>
+			<span id="allTime">123</span>
+		</div>
+		<div>
+			<span id="loopModel">&#xe63b;</span>
+			<span id="prev">&#xe6c9;</span>
+			<span id="pauseOrPlay">&#xe602;</span>
+			<span id="next">&#xe6c8;</span>
+			<span id="menu">&#xe67d;</span>
+		</div>
+	</footer>
+</div>

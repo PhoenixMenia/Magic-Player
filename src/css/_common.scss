@@ -1,0 +1,26 @@
+$heiHeader:43px;
+$heiFooter:65px;
+$baseSize: 14px;
+
+
+
+@mixin flexbox($f-direction:row){
+    display: flex;
+    display:-webkit-flex;
+    display:-moz-flex;
+    display: -ms-flex;
+    display: -o-flex;   
+    flex-direction: $f-direction;
+    -webkit-flex-direction: $f-direction;
+    -moz-flex-direction: $f-direction;
+    -o-flex-direction: $f-direction;
+    -ms-flex-direction: $f-direction;
+}
+
+@mixin flex($num){
+    flex: $num;
+    -webkit-flex: $num;
+    -moz-flex: $num;
+    -o-flex: $num;
+    -ms-flex: $num;
+}
