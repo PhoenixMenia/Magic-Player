@@ -1,25 +1,23 @@
 <div class="container">
-	<div id="hidden"></div>
 	<header>
 		<span>&#xe6e4;</span>
-		<span id="songName">当发达</span>
+		<span id="songName" class="text-big"></span>
 		<span>&#xe648;</span>
 	</header>
 	<section>
 		<div>
 			<img id="volume" src="./src/img/vol.png"/>
-			<input id="volumeRange" type="range" value="0.5" min="0" max="1.0" step="0.1"/>
+			<input id="volumeRange" type="range" value="0" min="0" max="2" step="0.1"/>
 		</div>
-		<article>
-			<div id="lyricContainer"></div>
+		<article id="lyricContainer">
 		</article>
 	</section>
 	<footer>
 		<audio id="audio" src="/src/content/songs/123_mu_tou_ren.mp3" autoplay="autoplay"></audio>
 		<div>
-			<span id="currTime">123</span>
+			<span id="currTime"></span>
 			<input id="playRange" type="range" value="0" min="0" max="" step="1"/>
-			<span id="allTime">123</span>
+			<span id="allTime"></span>
 		</div>
 		<div>
 			<span id="loopModel">&#xe63b;</span>

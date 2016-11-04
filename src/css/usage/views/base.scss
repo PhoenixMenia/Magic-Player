@@ -23,6 +23,7 @@ html,body{
 
 body{
     margin: 0;
+    padding: 0;
     font-size: $baseSize;
     line-height: 1.5;
     font-family: helvetica Neue, helvetica, STHeiTi, sans-serif;
@@ -56,8 +57,49 @@ article,aside,details,figcaption,footer,header,menu,nav,section,summary,figure{
     @include flexbox(column);
 }
 
-#hidden{
-    display: none;
+
+@media only screen and (max-width: 321px) {
+    .text-middle{
+        font-size: $baseSize + 4;
+        height: 30px;
+        line-height: 30px;
+    }
+    .text-big{
+        font-size: $baseSize + 6;
+    }
+}
+
+@media only screen and (min-width: 322px) and (max-width: 414px) {
+    .text-middle{
+        font-size: $baseSize + 4;
+        height: 30px;
+        line-height: 30px;
+    }
+    .text-big{
+        font-size: $baseSize + 6;
+    }
+}
+
+@media only screen and (min-width: 415px) and (max-width: 768px) {
+    .text-middle{
+        font-size: $baseSize + 6;
+        height: 35px;
+        line-height: 35px;
+    }
+    .text-big{
+        font-size: $baseSize + 8;
+    }
+}
+
+@media only screen and (min-width: 769px) {
+    .text-middle{
+        font-size: $baseSize + 8;
+        height: 40px;
+        line-height: 40px;
+    }
+    .text-big{
+        font-size: $baseSize + 12;
+    }
 }
 
 

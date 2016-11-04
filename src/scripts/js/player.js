@@ -1,34 +1,10 @@
-/*$(function() {
-	var oAudio = document.getElementById('audio'),
-		isPlay = false,
-		volumeRange = 0.5,
-		isVolume = true;
-	
-	//静音切换
-	$('#volumeRange').val(volumeRange);
-	$('#volume').on('click', function() {
-		if (isVolume) {
-			$(this).attr('src', '/src/img/novol.png');
-			oAudio.volume = 0;
-		} else {
-			$(this).attr('src', '/src/img/vol.png');
-			oAudio.volume = volumeRange;
-		}
-		isVolume = !isVolume;
-	});
-	
-	//加减声音
-	$('#volumeRange').on('input', function() {
-		volumeRange = Number($(this).val());
-		if(volumeRange === 0) {
-			$('#volume').attr('src', '/src/img/novol.png');
-		} else {
-			$('#volume').attr('src', '/src/img/vol.png');
-		}
-		oAudio.volume = volumeRange;
-	});	
-
-});*/
+function getStyle(obj,attr) {	
+	if (obj.currentStyle) {
+		return obj.currentStyle[attr];
+	} else {
+		return getComputedStyle(obj, false)[attr];
+	}
+}
 
 
 
@@ -36,34 +12,41 @@ window.onload = function() {
 	new Player().initialList();
 }
 
+
 var Player = function() {
 	this.audio = document.getElementById('audio');
 	this.lyricContainer = document.getElementById('lyricContainer');
+	this.lyricContainerHeight = parseInt(getStyle(this.lyricContainer,'height'));
 	this.currentIndex = 0;
 	this.songName = document.getElementById('songName');
 	this.lyric = null;
     this.lyricStyle = 0;
     this.isPlay = true;
     this.isVolume = true;
-    this.volumeVal = 0.5;
+    this.volumeVal = 1;
     this.volumeRange = document.getElementById('volumeRange');
     this.volumePic = document.getElementById('volume');
     this.allSongs = null;
+    this.next = document.getElementById('next');
+    this.prev = document.getElementById('prev');
+    this.controller = document.getElementById('pauseOrPlay');
+    this.modeCtrl = document.getElementById('loopModel');
+    this.loopMode = 0;
+    this.playRange = document.getElementById('playRange');
 }
 
 Player.prototype.init = function(songs) {	
 	var that = this;
 	this.allSongs = songs;
-	songs.forEach(function(v, i, a) {
-		var songName = '/src/content/songs/' + v.lrc_name + '.mp3';
-		that.audio.src = songName;
-		that.lyricContainer.style.top = '0px';
-		that.lyric = null;
-		that.lyricContainer.innerHTML = 'loading...';
-		that.lyricStyle = Math.floor(Math.random() * 4);
-	});
+	var index = this.currentIndex;
+	var songName = '/src/content/songs/' + this.allSongs[index].lrc_name + '.mp3';
+	this.audio.src = songName;
+	//that.lyricContainer.scrollTop = 0;
+	that.lyric = null;
+	that.lyricContainer.innerHTML = 'loading...';
+	that.lyricStyle = Math.floor(Math.random() * 4);
 	
-	
+	this.progress();
 	this.play();
 	
 	function aaa(obj) {
@@ -94,17 +77,66 @@ Player.prototype.init = function(songs) {
 		aaa(that);
 	});
 	
-	document.getElementById('next').addEventListener('click', function() {
-		that.currentIndex++;
-		that.audio.src = '/src/content/songs/' + that.allSongs[that.currentIndex].lrc_name + '.mp3';
+	this.next.addEventListener('click', function() {
+		that.playNext();
+	});
+	
+	
+	this.prev.addEventListener('click', function() {
+		that.currentIndex--;
+		that.currentIndex = that.currentIndex === -1
+							? that.allSongs.length - 1 
+							: that.currentIndex;
+		
+		var _index = that.currentIndex;
+		console.log(_index,that.allSongs.length);
+		that.audio.src = '/src/content/songs/' 
+						+ that.allSongs[_index].lrc_name
+						+ '.mp3';
 		that.play();
 	});
+	
+	
+	this.controller.addEventListener('click', function() {
+		that.isPlay = !that.isPlay;
+		
+		if (!that.isPlay) {
+			that.audio.pause();
+			this.innerHTML = '&#xe7c3;'
+		} else {
+			that.audio.play();
+			this.innerHTML = '&#xe602;'
+		}
+	});
+	
+	this.modeCtrl.addEventListener('click', function() {
+		that.loopMode++;
+		that.loopMode = that.loopMode === 3 ? 0 : that.loopMode;
+		that.changeMode();
+	});
+	
+	function playyy() {
+		that.progress();
+	}
+	
+	this.audio.addEventListener('timeupdate', playyy);
+		
+	this.playRange.addEventListener('touchstart', function() {
+		that.audio.removeEventListener('timeupdate', playyy);
+		
+		that.playRange.addEventListener('touchend', function() {
+			that.audio.currentTime = that.playRange.value;
+			that.audio.addEventListener('timeupdate', playyy);
+		});
+		
+	});
+	
 };
 
 Player.prototype.initialList = function() {
 	var that = this;
 	var xhttp = new XMLHttpRequest();		
-	xhttp.open('get', '/src/js/content.json', true);
+	xhttp.open('get', '/src/scripts/js/content.json', true);
 	
 	xhttp.onreadystatechange = function() {
 		if ((xhttp.status == 200 ||xhttp.status == 304) && xhttp.readyState == 4) {
@@ -120,29 +152,29 @@ Player.prototype.initialList = function() {
 
 Player.prototype.play = function() {
 	var that = this;
+	var index = that.currentIndex;
 	this.audio.addEventListener('canplay',function() {
 			that.getLyric(that.audio.src.replace('.mp3', '.lrc'));
 			that.getAllTime();
 	        that.play();
-	        that.songName.innerHTML = that.allSongs[that.currentIndex].song_name + '-' + that.allSongs[that.currentIndex].artist;
-		});
-		
-	this.audio.addEventListener('timeupdate', function() {
-		if (!that.lyric) {
-			return;
-		}
-		that.getCurrentTime();
-		for (var i = 0, l = that.lyric.length; i < l; i++) {
-			if (this.currentTime > that.lyric[i][0] - 0.50) {
-				var line = document.getElementById('line-' + i),
-					prevLine = document.getElementById('line-'+(i>0?i-1:i));
-				prevLine.className = '';
-				line.className = 'current-line-' + that.lyricStyle;
-                that.lyricContainer.style.top = 130 - line.offsetTop + 'px';
-			}
-		}		
-	});		
+	        that.songName.innerHTML = that.allSongs[index].song_name 
+	        							+ '-' 
+	        							+ that.allSongs[index].artist;
+	});	
 	
+};
+
+Player.prototype.playNext = function() {
+	this.currentIndex++;
+	this.currentIndex = this.currentIndex === this.allSongs.length 
+						? 0 
+						: this.currentIndex;
+	var index = this.currentIndex;
+	console.log(index,this.allSongs.length);
+	this.audio.src = '/src/content/songs/' 
+					+ this.allSongs[index].lrc_name
+					+ '.mp3';
+	this.play();
 };
 
 
@@ -168,25 +200,6 @@ Player.prototype.getCurrentTime = function() {
 	
 	document.getElementById('currTime').innerHTML = min + ':' + sec;
 	document.getElementById('playRange').value = currTime;
-	
-	//判断当前音乐是否播放完成
-	/*var isEnded = this.audio.ended;
-	if (isEnded) {
-		//顺序播放
-		if (pattern === 0) {
-			$('#next').trigger('click');
-		} else if (pattern === 1) { //单曲循环
-			index--;
-			$('#next').trigger('click');
-		} else {
-			index = parseInt(Math.random() * len);
-			$('#next').trigger('click');
-		}
-	}*/	
-};
-
-
-Player.prototype.playNext = function() {
 	
 };
 
@@ -243,6 +256,7 @@ Player.prototype.appendLyric = function(lyric) {
     lyric.forEach(function(v, i, a) {
     	var line = document.createElement('p');
     	line.id = 'line-' + i;
+    	line.className = 'text-middle';
     	line.textContent = v[1];
     	fragment.appendChild(line);
     });
@@ -262,6 +276,64 @@ Player.prototype.getOffset = function(text) {
     }
     return offset;
 };
+
+
+Player.prototype.changeMode = function() {
+	if (this.loopMode === 0) {  //顺序播放
+		this.modeCtrl.innerHTML = '&#xe63b;';
+	} else if (this.loopMode === 1) {  //单曲循环
+		this.modeCtrl.innerHTML = '&#xe62f;';
+	} else {    //随机播放
+		this.modeCtrl.innerHTML = '&#xe6f1;';
+	}
+}
+
+Player.prototype.mm = function() {
+	if (this.loopMode === 0) {
+		this.playNext();
+	} else if (this.loopMode === 1) {
+		this.currentIndex--;
+		this.playNext();
+	} else {
+		this.currentIndex = parseInt(Math.random() * 95);
+		this.playNext();
+	}
+}
+
+Player.prototype.progress = function() {
+	
+	this.getCurrentTime();
+	
+	if (!this.lyric) {
+		return;
+	}
+	
+	for (var i = 0, l = this.lyric.length; i < l; i++) {
+		
+		if (this.audio.currentTime > this.lyric[i][0] - 0.50) {
+			var line = document.getElementById('line-' + i),
+				prevLine = document.getElementById('line-'+(i>0?i-1:i));
+			prevLine.className = 'text-middle';
+			line.className = 'text-middle current-line-' + this.lyricStyle;	
+			
+			if (line.offsetTop >= this.lyricContainerHeight/2) {
+				this.lyricContainer.scrollTop = line.offsetTop 
+				- this.lyricContainerHeight/2;
+			}
+
+		}
+	}
+	
+	//判断当前音乐是否播放完成
+	var isEnded = this.audio.ended;
+	isEnded && this.mm();
+}
+
+
+
+
+
+
 
 
 
