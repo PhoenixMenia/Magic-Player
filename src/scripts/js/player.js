@@ -52,17 +52,20 @@ var Player = function() {
     this.loopMode = 0;
     this.playRange = document.getElementById('playRange');
     this.menu = document.getElementById('menu');
+    this.playList = document.getElementById('playList');
+    this.playList.show = false;
 }
 
 Player.prototype.init = function(songs) {
 	var that = this;
 	this.allSongs = songs;
+	console.log(this.allSongs);
 	var index = this.currentIndex;
 	var songName = '/src/content/songs/' + this.allSongs[index].lrc_name + '.mp3';
 	this.audio.src = songName;
 	this.lyric = null;
 	this.lyricContainer.innerHTML = 'loading...';
-	//this.lyricContainer.style.background = bg;
+
 	
 	
 	this.progress();
@@ -155,6 +158,18 @@ Player.prototype.init = function(songs) {
 		that.getMenu();
 	});
 	
+	/*document.addEventListener('click', function(event) {
+		var target = event.srcElement || event.target;
+		if (target.id !== 'playList') {
+			if (that.playList.show) {
+				that.getMenu();
+			}		
+		}
+		
+	}, false);*/
+	
+	
+	
 };
 
 Player.prototype.initialList = function() {
@@ -168,6 +183,7 @@ Player.prototype.initialList = function() {
 			var songs = JSON.parse(txt).data;
 			//在回调函数中处理过程
 			that.init(songs);
+			that.addPlayList(songs);
 		}
 	}
 	xhttp.send();
@@ -176,7 +192,7 @@ Player.prototype.initialList = function() {
 
 Player.prototype.play = function() {
 	var that = this;
-	var index = that.currentIndex;
+	var index = this.currentIndex;
 	this.audio.addEventListener('canplay',function() {
 			that.getLyric(that.audio.src.replace('.mp3', '.lrc'));
 			that.getAllTime();
@@ -354,7 +370,47 @@ Player.prototype.progress = function() {
 }
 
 Player.prototype.getMenu = function() {
-	console.log(123);
-	//this.menu.style.display = '';
+	if (!this.playList.show) {
+		this.playList.style.display = 'block';
+	} else {
+		this.playList.style.display = 'none';
+	}
+	this.playList.show = !this.playList.show;
+}
+
+
+Player.prototype.addPlayList = function(arr) {
+	var that = this;
+	var template = this.playList.children[1].children[0];   //获取li
+	var fragement = document.createDocumentFragment();
+	arr.forEach(function(element, index, arr) {
+		var num = index + 1;
+		var songname = element.song_name;
+		var artist = element.artist;		
+		var oLi = template.cloneNode(true);
+		oLi.id = '';
+		oLi.children[0].innerHTML = num;
+		oLi.children[1].children[0].innerHTML = songname;
+		oLi.children[1].children[1].innerHTML = artist;	
+		
+		/*oLi.addEventListener('touchstart', function() {
+			this.backgroundColor = '#888';
+			console.log('abc');
+		});
+		*/
+		
+		oLi.addEventListener('touchend', function() {
+			that.currentIndex = index;
+			that.audio.src = '/src/content/songs/' 
+						+ element.lrc_name
+						+ '.mp3';
+			that.play();
+			console.log(123);
+		});
+		
+		fragement.appendChild(oLi);
+	});
+	
+	that.playList.children[1].appendChild(fragement);
 }
 

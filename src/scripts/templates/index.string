@@ -28,17 +28,19 @@
 			<span id="menu">&#xe67d;</span>
 		</div>
 	</footer>
+	
+	<div id="playList" class="playList">
+		<h2 class="border-bottom">
+			播放队列<span>1</span>
+		</h2>
+		<ul id="bounce-back-box">
+			<li id="hidden">
+				<span>01</span>
+				<center><strong>asfasfasfasf</strong><small>abcd</small></center>
+				<span>&#xe617;</span>
+			</li>
+		</ul>
+	</div>
 </div>
 
-<div id="playList" class="playList">
-	<h2 class="border-bottom">
-		播放队列<span>1</span>
-	</h2>
-	<ul>
-		<li>
-			<span>01</span>
-			<center><strong>asfasfasfasf</strong><small>abcd</small></center>
-			<span>sff</span>
-		</li>
-	</ul>
-</div>
+

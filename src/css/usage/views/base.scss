@@ -27,7 +27,7 @@ body{
     font-size: $baseSize;
     line-height: 1.5;
     font-family: helvetica Neue, helvetica, STHeiTi, sans-serif;
-    color: #FFFDEF;
+    color: #FFFDEF;  
 }
 
 ul,ol,dl,dd,h1,h2,h3,h4,h5,h6,figure,form,fieldset,legend,input,
@@ -47,6 +47,7 @@ address,cite,dfn,em,i,optgroup,strong,var{
 article,aside,details,figcaption,footer,header,menu,nav,section,summary,figure{
     display: block;
 }
+
 
 
 .container{

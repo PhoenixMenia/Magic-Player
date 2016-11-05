@@ -34,6 +34,16 @@ window.onload = function() {
 				vScrollbar: false
 			});
 		}, 3000);*/
-				
+		
+		/*setTimeout(function() {
+			var myscroll = new iscroll('#bounce-back-box', {
+				mouseWheel: true,
+				hScrollbar: false,
+				vScrollbar: false
+			});
+		}, 1500);*/				
 	}
+	
+	
+	
 }

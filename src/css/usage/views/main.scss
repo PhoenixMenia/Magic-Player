@@ -45,25 +45,24 @@ section{
 
 $paddingLeft: 10px;
 $h2Height: 45px;
-$liHeight: 40px;
+$liHeight: 42px;
 
 .playList{
     width: 85%;
-    height: 50%;
-    background: grey;
+    height: 300px;  /*高度需调整*/
+    background: lightblue;
     padding-bottom: 10px;
     position: fixed;
     right: 5%;
     bottom: $heiFooter - 15px;
     z-index: 1000;
     font-family: "微软雅黑";
-    @include flexbox(column);
-    display: none;
+    display: none;  
     h2{
         height: $h2Height;
         padding-left: $paddingLeft;
         line-height: $h2Height;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: normal;
         border-color: #fff;
         span{
@@ -73,19 +72,24 @@ $liHeight: 40px;
     }
     ul{
         width: 100%;
-        @include flex(1);
+        //height: -webkit-calc(300px - $h2Height);
+        height: 255px;
         overflow: auto;
+        padding-bottom: 10px;
         li{
             height: $liHeight;
             line-height: $liHeight;
             padding-left: $paddingLeft;
             border: 0;
-            font-size: 16px;
+            font-size: 14px;
             @include flexbox(row);
             span{
                 width: 35px;
                 height: 100%;
                 text-align: left;
+                &:last-child{
+                    font-family: iconfont;
+                }
             }
             center{
                 text-align: left;
@@ -99,13 +103,16 @@ $liHeight: 40px;
                 }
                 small{
                     display: block;
-                    font-size: 12px;
+                    font-size: 10px;
                     height: ($liHeight / 2);
                     line-height: ($liHeight / 3);
-                    color: #ccc;
+                    //color: #aaa;                    
                 }
             }
             
+        }
+        #hidden{
+            display: none;
         }
     }
 }
