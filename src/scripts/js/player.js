@@ -58,6 +58,7 @@ var Player = function() {
     this.playList.show = false;
 }
 
+//初始化  添加事件处理程序
 Player.prototype.init = function(songs) {
 	var that = this;
 	this.allSongs = songs;
@@ -98,11 +99,12 @@ Player.prototype.init = function(songs) {
 		aaa(that);
 	});
 	
+	//播放下一曲
 	this.next.addEventListener('click', function() {
 		that.playNext();
 	});
 	
-	
+	//播放上一曲
 	this.prev.addEventListener('click', function() {
 		that.currentIndex--;
 		that.currentIndex = that.currentIndex === -1
@@ -112,7 +114,7 @@ Player.prototype.init = function(songs) {
 		that.play(that.currentIndex);
 	});
 	
-	
+	//播放、暂停
 	this.controller.addEventListener('click', function() {
 		that.isPlay = !that.isPlay;
 		
@@ -125,6 +127,7 @@ Player.prototype.init = function(songs) {
 		}
 	});
 	
+	//切换循环模式
 	this.modeCtrl.addEventListener('click', function() {
 		that.loopMode++;
 		that.loopMode = that.loopMode === 3 ? 0 : that.loopMode;
@@ -135,6 +138,7 @@ Player.prototype.init = function(songs) {
 		that.progress();
 	}
 	
+	//更新
 	this.audio.addEventListener('timeupdate', playyy);
 		
 	this.playRange.addEventListener('touchstart', function() {
@@ -185,7 +189,7 @@ Player.prototype.initialList = function() {
 };
 
 
-
+//播放歌曲
 Player.prototype.play = function(index) {
 	var that = this;
 	this.audio.src = '/src/content/songs/' + this.allSongs[index].lrc_name + '.mp3';
@@ -207,7 +211,7 @@ Player.prototype.play = function(index) {
 };
 
 
-
+//播放下一曲
 Player.prototype.playNext = function() {
 	this.currentIndex++;
 	this.currentIndex = this.currentIndex === this.allSongs.length 
@@ -218,9 +222,9 @@ Player.prototype.playNext = function() {
 
 
 Player.prototype.getAllTime = function() {
-	var allTime = Math.ceil(this.audio.duration);
-	var min = parseInt(allTime / 60),
-		sec = allTime % 60;
+	var allTime = Math.ceil(this.audio.duration);   //获取总时间
+	var min = parseInt(allTime / 60),     //获取分钟数
+		sec = allTime % 60;               //获取秒数
 	min = min.toString().length > 1 ? min : '0' + min;
 	sec = sec.toString().length >1 ? sec : '0' + sec;
 				
@@ -262,17 +266,19 @@ Player.prototype.getLyric = function(url) {
 };
 
 
-
+//解析歌词
 Player.prototype.parseLyric = function(text) {
-	var lines = text.split('\n');
-	var pattern = /\[\d{2}:\d{2}.\d{2}\]/g;
+	var lines = text.split('\n');      //将歌词字符串从换行符的地方开始分割成数组
+	var pattern = /\[\d{2}:\d{2}.\d{2}\]/g;   //事件匹配模式
 	var result = [];
 	var offset = this.getOffset(text);
 	
+	//删除没有时间的非歌词元素
 	while (!pattern.test(lines[0])) {
         lines = lines.slice(1);
     };
     
+    //删除最后的空白行
     lines[lines.length - 1].length === 0 && lines.pop();
     
     lines.forEach(function(v, i, a) {
@@ -291,7 +297,7 @@ Player.prototype.parseLyric = function(text) {
 };
 
 
-
+//将歌词显示到页面
 Player.prototype.appendLyric = function(lyric) {
 	var that = this;
     var fragment = document.createDocumentFragment();
@@ -324,7 +330,7 @@ Player.prototype.getOffset = function(text) {
 };
 
 
-
+//修改循环模式
 Player.prototype.changeMode = function() {
 	if (this.loopMode === 0) {  //顺序播放
 		this.modeCtrl.innerHTML = '&#xe63b;';
@@ -335,15 +341,15 @@ Player.prototype.changeMode = function() {
 	}
 }
 
-
+//当前歌曲播放完之后继续播放
 Player.prototype.continuePlaying = function() {
-	if (this.loopMode === 0) {
+	if (this.loopMode === 0) {  //顺序播放
 		this.playNext();
-	} else if (this.loopMode === 1) {
+	} else if (this.loopMode === 1) {    //单曲循环
 		this.currentIndex = this.currentIndex;
 		this.play(this.currentIndex);
-	} else {
-		this.currentIndex = parseInt(Math.random() * 95);
+	} else {             //随机播放
+		this.currentIndex = parseInt(Math.random() * this.allSongs.length);
 		this.play(this.currentIndex);
 	}
 }
@@ -362,8 +368,9 @@ Player.prototype.progress = function() {
 			var line = document.getElementById('line-' + i),
 				prevLine = document.getElementById('line-'+(i>0?i-1:i));
 			prevLine.className = 'text-middle';
-			line.className = 'text-middle current';	
+			line.className = 'text-middle current';	  //高亮显示当前正在播放的歌词
 			
+			//当播放的歌词超过container的一半时开始滚动
 			if (line.offsetTop >= this.lyricContainerHeight/2) {
 				this.lyricContainer.scrollTop = line.offsetTop 
 				- this.lyricContainerHeight/2;
@@ -372,8 +379,7 @@ Player.prototype.progress = function() {
 	}
 	
 	//判断当前音乐是否播放完成
-	var isEnded = this.audio.ended;
-	isEnded && this.continuePlaying();
+	this.audio.ended && this.continuePlaying();
 }
 
 
@@ -392,7 +398,7 @@ Player.prototype.getMenu = function() {
 Player.prototype.addPlayList = function(arr) {
 	
 	var that = this;
-	var template = this.playList.children[1].children[0];   //获取li
+	var template = this.playList.children[1].children[0];   //获取li的模板
 	var fragement = document.createDocumentFragment();
 	
 	arr.forEach(function(element, index, arr) {
@@ -424,6 +430,8 @@ Player.prototype.addPlayList = function(arr) {
 	});
 	
 	that.playList.children[1].appendChild(fragement);
+	
+	//显示所有歌曲总数
 	document.getElementById('ttlSongsCount').innerHTML = arr.length;
 }
 
