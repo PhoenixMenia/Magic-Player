@@ -31,7 +31,7 @@
 	
 	<div id="playList" class="playList">
 		<h2 class="border-bottom">
-			播放队列<span>1</span>
+			播放队列<span id="ttlSongsCount"></span>
 		</h2>
 		<ul id="bounce-back-box">
 			<li id="hidden">

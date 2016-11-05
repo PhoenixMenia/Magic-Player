@@ -7,6 +7,8 @@ function getStyle(obj,attr) {
 	}
 }
 
+/*===================================*/
+
 
 /*window.onload = function() {
 	new Player().initialList();
@@ -31,7 +33,7 @@ setTimeout(function() {
 
 
 
-
+//构造函数
 var Player = function() {
 	this.audio = document.getElementById('audio');
 	this.lyricContainer = document.getElementById('lyricContainer');
@@ -59,18 +61,15 @@ var Player = function() {
 Player.prototype.init = function(songs) {
 	var that = this;
 	this.allSongs = songs;
-	console.log(this.allSongs);
 	var index = this.currentIndex;
 	var songName = '/src/content/songs/' + this.allSongs[index].lrc_name + '.mp3';
-	this.audio.src = songName;
+	
+	that.addPlayList(songs);
+	this.play(index);
 	this.lyric = null;
-	this.lyricContainer.innerHTML = 'loading...';
-
-	
-	
+	this.lyricContainer.innerHTML = 'loading...';		
 	this.progress();
-	this.play();
-	
+		
 	function aaa(obj) {
 		if (!obj.isVolume) {
 			obj.volumePic.src = '/src/img/novol.png';
@@ -109,13 +108,8 @@ Player.prototype.init = function(songs) {
 		that.currentIndex = that.currentIndex === -1
 							? that.allSongs.length - 1 
 							: that.currentIndex;
-		
-		var _index = that.currentIndex;
-		console.log(_index,that.allSongs.length);
-		that.audio.src = '/src/content/songs/' 
-						+ that.allSongs[_index].lrc_name
-						+ '.mp3';
-		that.play();
+
+		that.play(that.currentIndex);
 	});
 	
 	
@@ -172,6 +166,8 @@ Player.prototype.init = function(songs) {
 	
 };
 
+
+
 Player.prototype.initialList = function() {
 	var that = this;
 	var xhttp = new XMLHttpRequest();		
@@ -183,38 +179,41 @@ Player.prototype.initialList = function() {
 			var songs = JSON.parse(txt).data;
 			//在回调函数中处理过程
 			that.init(songs);
-			that.addPlayList(songs);
 		}
 	}
 	xhttp.send();
 };
 
 
-Player.prototype.play = function() {
+
+Player.prototype.play = function(index) {
 	var that = this;
-	var index = this.currentIndex;
+	this.audio.src = '/src/content/songs/' + this.allSongs[index].lrc_name + '.mp3';
+	
 	this.audio.addEventListener('canplay',function() {
 			that.getLyric(that.audio.src.replace('.mp3', '.lrc'));
 			that.getAllTime();
-	        that.play();
 	        that.songName.innerHTML = that.allSongs[index].song_name 
 	        							+ '-' 
 	        							+ that.allSongs[index].artist;
 	});	
 	
+	var len = this.allSongs.length;
+	for (var i = 0; i < len; i++) {
+		this.playList.children[1].children[i].style.backgroundColor = '';
+	}
+	this.playList.children[1].children[index + 1].style.backgroundColor = '#888';
+	
 };
+
+
 
 Player.prototype.playNext = function() {
 	this.currentIndex++;
 	this.currentIndex = this.currentIndex === this.allSongs.length 
 						? 0 
 						: this.currentIndex;
-	var index = this.currentIndex;
-	console.log(index,this.allSongs.length);
-	this.audio.src = '/src/content/songs/' 
-					+ this.allSongs[index].lrc_name
-					+ '.mp3';
-	this.play();
+	this.play(this.currentIndex);
 };
 
 
@@ -226,8 +225,9 @@ Player.prototype.getAllTime = function() {
 	sec = sec.toString().length >1 ? sec : '0' + sec;
 				
 	document.getElementById('allTime').innerHTML = min + ':' + sec;
-	document.getElementById('playRange').max = allTime;
+	this.playRange.max = allTime;
 }
+
 
 
 Player.prototype.getCurrentTime = function() {
@@ -239,9 +239,10 @@ Player.prototype.getCurrentTime = function() {
 	sec = sec.toString().length > 1 ? sec : '0' + sec;
 	
 	document.getElementById('currTime').innerHTML = min + ':' + sec;
-	document.getElementById('playRange').value = currTime;
+	this.playRange.value = currTime;
 	
 };
+
 
 
 Player.prototype.getLyric = function(url) {
@@ -259,6 +260,7 @@ Player.prototype.getLyric = function(url) {
 	this.lyricContainer.textContent = 'loading lyric...';
 	xhttp.send();
 };
+
 
 
 Player.prototype.parseLyric = function(text) {
@@ -288,6 +290,8 @@ Player.prototype.parseLyric = function(text) {
     return result;
 };
 
+
+
 Player.prototype.appendLyric = function(lyric) {
 	var that = this;
     var fragment = document.createDocumentFragment();
@@ -304,6 +308,8 @@ Player.prototype.appendLyric = function(lyric) {
     
 };
 
+
+
 Player.prototype.getOffset = function(text) {
 	var offset = 0;	 
 	try {
@@ -318,6 +324,7 @@ Player.prototype.getOffset = function(text) {
 };
 
 
+
 Player.prototype.changeMode = function() {
 	if (this.loopMode === 0) {  //顺序播放
 		this.modeCtrl.innerHTML = '&#xe63b;';
@@ -328,28 +335,29 @@ Player.prototype.changeMode = function() {
 	}
 }
 
-Player.prototype.mm = function() {
+
+Player.prototype.continuePlaying = function() {
 	if (this.loopMode === 0) {
 		this.playNext();
 	} else if (this.loopMode === 1) {
-		this.currentIndex--;
-		this.playNext();
+		this.currentIndex = this.currentIndex;
+		this.play(this.currentIndex);
 	} else {
 		this.currentIndex = parseInt(Math.random() * 95);
-		this.playNext();
+		this.play(this.currentIndex);
 	}
 }
 
-Player.prototype.progress = function() {
-	
+
+
+Player.prototype.progress = function() {	
 	this.getCurrentTime();
 	
 	if (!this.lyric) {
 		return;
 	}
 	
-	for (var i = 0, l = this.lyric.length; i < l; i++) {
-		
+	for (var i = 0, l = this.lyric.length; i < l; i++) {		
 		if (this.audio.currentTime > this.lyric[i][0] - 0.50) {
 			var line = document.getElementById('line-' + i),
 				prevLine = document.getElementById('line-'+(i>0?i-1:i));
@@ -360,15 +368,16 @@ Player.prototype.progress = function() {
 				this.lyricContainer.scrollTop = line.offsetTop 
 				- this.lyricContainerHeight/2;
 			}
-
 		}
 	}
 	
 	//判断当前音乐是否播放完成
 	var isEnded = this.audio.ended;
-	isEnded && this.mm();
+	isEnded && this.continuePlaying();
 }
 
+
+//点击menu的时候toggle歌曲列表
 Player.prototype.getMenu = function() {
 	if (!this.playList.show) {
 		this.playList.style.display = 'block';
@@ -379,10 +388,13 @@ Player.prototype.getMenu = function() {
 }
 
 
+//在播放列表中显示所有的歌曲信息
 Player.prototype.addPlayList = function(arr) {
+	
 	var that = this;
 	var template = this.playList.children[1].children[0];   //获取li
 	var fragement = document.createDocumentFragment();
+	
 	arr.forEach(function(element, index, arr) {
 		var num = index + 1;
 		var songname = element.song_name;
@@ -393,24 +405,25 @@ Player.prototype.addPlayList = function(arr) {
 		oLi.children[1].children[0].innerHTML = songname;
 		oLi.children[1].children[1].innerHTML = artist;	
 		
-		/*oLi.addEventListener('touchstart', function() {
-			this.backgroundColor = '#888';
-			console.log('abc');
+		oLi.addEventListener('touchstart', function() {
+			this.style.backgroundColor = '#888';
 		});
-		*/
-		
+			
 		oLi.addEventListener('touchend', function() {
+			this.style.backgroundColor = '';
 			that.currentIndex = index;
-			that.audio.src = '/src/content/songs/' 
-						+ element.lrc_name
-						+ '.mp3';
-			that.play();
-			console.log(123);
+			that.play(that.currentIndex);
 		});
+		
+		//取消的时候怎么阻止播放选中的歌曲？？？
+		/*oLi.addEventListener('touchcancel', function() {
+			this.ontouchend = null;
+		});*/
 		
 		fragement.appendChild(oLi);
 	});
 	
 	that.playList.children[1].appendChild(fragement);
+	document.getElementById('ttlSongsCount').innerHTML = arr.length;
 }
 

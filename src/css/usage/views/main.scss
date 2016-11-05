@@ -84,7 +84,7 @@ $liHeight: 42px;
             font-size: 14px;
             @include flexbox(row);
             span{
-                width: 35px;
+                width: 25px;
                 height: 100%;
                 text-align: left;
                 &:last-child{
